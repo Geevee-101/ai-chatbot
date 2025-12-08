@@ -24,3 +24,8 @@ export const signupValidator = () => [
   body("email").notEmpty().trim().isEmail().withMessage("Email is required"),
   body("password").notEmpty().trim().isLength({ min: 6 }).withMessage("Password must be at least 6 characters long"),
 ]
+
+export const loginValidator = () => [
+  body("email").notEmpty().trim().isEmail().withMessage("Email is required"),
+  body("password").notEmpty().trim().isLength({ min: 6 }).withMessage("Password must be at least 6 characters long"),
+]
