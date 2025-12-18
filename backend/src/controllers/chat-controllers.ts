@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import User from "../models/User.js";
 
 export const generateChatCompletion = async (
   req: Request,
@@ -6,4 +7,8 @@ export const generateChatCompletion = async (
   next: NextFunction,
 ) => {
   const { message } = req.body;
+  if (!res.locals.user) {
+    return res.status(401).json({ message: "Unauthorized, not authenticated" });
+  }
+  const user = res.locals.user;
 };

@@ -1,8 +1,8 @@
-import User from "../models/User.js";
 import { NextFunction, Request, Response } from "express";
 import { hash, compare } from "bcrypt";
 import { generateToken } from "../utils/token-manager.js";
 import { COOKIE_NAME } from "../utils/constants.js";
+import User from "../models/User.js";
 
 export const getAllUsers = async (
   req: Request,
@@ -95,31 +95,6 @@ export const userLogin = async (
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-
-    return res.status(200).json({
-      message: "User logged in successfully",
-      name: user.name,
-      email: user.email,
-    });
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Internal server error", cause: error.message });
-  }
-};
-
-export const authenticateUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const user = await User.findById(res.locals.jwtData.id).select("-password");
-    if (!user) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized, user not found or token invalid." });
-    }
 
     return res.status(200).json({
       message: "User logged in successfully",
