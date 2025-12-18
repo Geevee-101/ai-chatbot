@@ -1,27 +1,38 @@
-import User from "../models/User.js"
-import { NextFunction, Request, Response } from "express"
-import { hash, compare } from "bcrypt"
-import { generateToken } from "../utils/token-manager.js"
-import { COOKIE_NAME } from "../utils/constants.js"
+import User from "../models/User.js";
+import { NextFunction, Request, Response } from "express";
+import { hash, compare } from "bcrypt";
+import { generateToken } from "../utils/token-manager.js";
+import { COOKIE_NAME } from "../utils/constants.js";
 
-export const getAllUsers = async (req:Request, res:Response, next:NextFunction) => {
+export const getAllUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const users = await User.find()
-    return res.status(200).json({ message: "Users fetched successfully", users})
+    const users = await User.find();
+    return res
+      .status(200)
+      .json({ message: "Users fetched successfully", users });
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ message: "Internal server error", cause: error.message})
+    return res
+      .status(500)
+      .json({ message: "Internal server error", cause: error.message });
   }
-}
+};
 
-export const userSignup = async (req:Request, res:Response, next:NextFunction) => {
+export const userSignup = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { name, email, password } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({ message: "User already exists" })
+      return res.status(409).json({ message: "User already exists" });
     }
-    const hashedPassword = await hash(password, 10)
+    const hashedPassword = await hash(password, 10);
     const user = await User.create({ name, email, password: hashedPassword });
     await user.save();
 
@@ -30,34 +41,43 @@ export const userSignup = async (req:Request, res:Response, next:NextFunction) =
       httpOnly: true,
       secure: true,
       sameSite: "strict",
-    })
+    });
 
-    const token = generateToken(user._id.toString(), user.email, "7d")
+    const token = generateToken(user._id.toString(), user.email, "7d");
 
     res.cookie(COOKIE_NAME, token, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
-    })
+    });
 
-    return res.status(201).json({ message: "User created successfully", user})
+    return res.status(201).json({
+      message: "User created successfully",
+      name: user.name,
+      email: user.email,
+    });
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ message: "Internal server error", cause: error.message})
+    return res
+      .status(500)
+      .json({ message: "Internal server error", cause: error.message });
   }
-}
+};
 
-export const userLogin = async (req:Request, res:Response, next:NextFunction) => {
+export const userLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const { email, password } = req.body
-    const user = await User.findOne({ email })
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" })
+      return res.status(401).json({ message: "Invalid email or password" });
     }
-    const isPasswordValid = await compare(password, user.password)
+    const isPasswordValid = await compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid email or password" })
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
     // create and store the token
@@ -65,20 +85,50 @@ export const userLogin = async (req:Request, res:Response, next:NextFunction) =>
       httpOnly: true,
       secure: true,
       sameSite: "strict",
-    })
+    });
 
-    const token = generateToken(user._id.toString(), user.email, "7d")
+    const token = generateToken(user._id.toString(), user.email, "7d");
 
     res.cookie(COOKIE_NAME, token, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
-    })
+    });
 
-    return res.status(200).json({ message: "User logged in successfully", user})
+    return res.status(200).json({
+      message: "User logged in successfully",
+      name: user.name,
+      email: user.email,
+    });
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ message: "Internal server error", cause: error.message})
+    return res
+      .status(500)
+      .json({ message: "Internal server error", cause: error.message });
   }
-}
+};
+
+export const authenticateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const user = await User.findById(res.locals.jwtData.id).select("-password");
+    if (!user) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized, user not found or token invalid." });
+    }
+
+    return res.status(200).json({
+      message: "User logged in successfully",
+      name: user.name,
+      email: user.email,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", cause: error.message });
+  }
+};

@@ -20,6 +20,19 @@ const CustomizedInput = (props: Props) => {
                 }
               }
             }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'white', // default
+                },
+                '&:hover fieldset': {
+                  borderColor: 'white', // hover
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'white', // focused
+                },
+              },
+            }}
         />
     )
 }
