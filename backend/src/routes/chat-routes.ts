@@ -1,6 +1,9 @@
 import { Router } from "express";
 import { chatCompletionValidator, validate } from "../utils/validators.js";
-import { generateChatCompletion } from "../controllers/chat-controllers.js";
+import {
+  createChatCompletion,
+  sendChatsToUser,
+} from "../controllers/chat-controllers.js";
 import {
   authenticateToken,
   authenticateUser,
@@ -13,7 +16,14 @@ chatRoutes.post(
   validate(chatCompletionValidator()),
   authenticateToken,
   authenticateUser,
-  generateChatCompletion,
+  createChatCompletion,
+);
+
+chatRoutes.get(
+  "/user-all-chats",
+  authenticateToken,
+  authenticateUser,
+  sendChatsToUser,
 );
 
 export default chatRoutes;

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { checkAuthStatus, loginUser } from "../helpers/api-communicator";
+import { checkAuthStatus, loginUser } from "../api/auth-api";
 
 type User = {
   name: string;

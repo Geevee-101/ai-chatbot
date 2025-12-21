@@ -39,17 +39,18 @@ export const userSignup = async (
     // create and store the token
     res.clearCookie(COOKIE_NAME, {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
     });
 
     const token = generateToken(user._id.toString(), user.email, "7d");
 
     res.cookie(COOKIE_NAME, token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      signed: true,
     });
 
     return res.status(201).json({
@@ -83,17 +84,18 @@ export const userLogin = async (
     // create and store the token
     res.clearCookie(COOKIE_NAME, {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
     });
 
     const token = generateToken(user._id.toString(), user.email, "7d");
 
     res.cookie(COOKIE_NAME, token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      signed: true,
     });
 
     return res.status(200).json({
