@@ -1,10 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Avatar, Box, Button, IconButton, Typography } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
 import { red } from "@mui/material/colors";
-import ChatItem from "../components/chat/ChatItem";
+import ChatItem from "../components/chats/ChatItem";
 import { ArrowUpRight } from "lucide-react";
-import { sendChatRequest } from "../api/chat-api";
+import { fetchUserChats, sendChatRequest } from "../api/chat-api";
+import { toast } from "sonner";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -34,6 +35,25 @@ export function Chat() {
 
     inputRef.current.value = "";
   };
+
+  useEffect(() => {
+    const toastId = toast.loading("Loading your chats...");
+    fetchUserChats()
+      .then((chats) => {
+        setChatMessages(chats || []);
+
+        console.log("Fetched chats:", chats);
+        console.log("Chat messages state:", chats || []);
+        toast.success("Chats loaded successfully");
+      })
+      .catch((error) => {
+        console.error("Failed to fetch chats:", error);
+        toast.error("Failed to load chats");
+      })
+      .finally(() => {
+        toast.dismiss(toastId);
+      });
+  }, []);
 
   return (
     <Box
@@ -74,7 +94,7 @@ export function Chat() {
             }}
           >
             {auth?.user?.name?.slice(0, 1)}
-            {auth?.user?.name?.split(" ")[1].slice(0, 1)}
+            {auth?.user?.name?.split(" ")[1]?.slice(0, 1)}
           </Avatar>
           <Typography sx={{ mx: "auto" }}>
             You are talking to a Chatbot

@@ -1,5 +1,5 @@
 import Header from "./components/Header";
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import { Toaster } from "sonner";
 import Login from "./pages/Login";
@@ -21,13 +21,13 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/chat" element={<Chat />} />
+          <Route path="/chats" element={<Chat />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Toaster />
       </main>
     </>
-  )
+  );
 }
 
 export default App;

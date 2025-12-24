@@ -9,9 +9,9 @@ import {
   authenticateUser,
 } from "../middleware/auth-middleware.js";
 
-const chatRoutes = Router();
+const chatsRoutes = Router();
 
-chatRoutes.post(
+chatsRoutes.post(
   "/new",
   validate(chatCompletionValidator()),
   authenticateToken,
@@ -19,11 +19,6 @@ chatRoutes.post(
   createChatCompletion,
 );
 
-chatRoutes.get(
-  "/user-all-chats",
-  authenticateToken,
-  authenticateUser,
-  sendChatsToUser,
-);
+chatsRoutes.get("/", authenticateToken, authenticateUser, sendChatsToUser);
 
-export default chatRoutes;
+export default chatsRoutes;

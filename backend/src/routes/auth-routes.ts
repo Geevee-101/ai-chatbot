@@ -3,7 +3,7 @@ import {
   getAllUsers,
   userLogin,
   userSignup,
-} from "../controllers/user-controllers.js";
+} from "../controllers/auth-controllers.js";
 import {
   validate,
   signupValidator,
@@ -19,17 +19,12 @@ const userRoutes = Router();
 userRoutes.get("/", getAllUsers);
 userRoutes.post("/signup", validate(signupValidator()), userSignup);
 userRoutes.post("/login", validate(loginValidator()), userLogin);
-userRoutes.get(
-  "/auth-status",
-  authenticateToken,
-  authenticateUser,
-  (req, res) => {
-    res.status(200).json({
-      message: "User logged in successfully",
-      name: res.locals.user.name,
-      email: res.locals.user.email,
-    });
-  },
-);
+userRoutes.get("/verify", authenticateToken, authenticateUser, (req, res) => {
+  res.status(200).json({
+    message: "User logged in successfully",
+    name: res.locals.user.name,
+    email: res.locals.user.email,
+  });
+});
 
 export default userRoutes;

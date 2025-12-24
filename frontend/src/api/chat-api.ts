@@ -1,19 +1,21 @@
 import axios from "../lib/axios";
 
 export const sendChatRequest = async (message: string) => {
-  const res = await axios.post("/chat/new", { message });
+  const res = await axios.post("/chats/new", { message });
   if (res.status !== 200) {
     throw new Error("Unaable to send message");
   }
   const data = res.data;
-  return data;
+  const messages = data.message;
+  const lastMessage = messages[messages.length - 1];
+  return lastMessage.content;
 };
 
-export const getUserAllChats = async () => {
-  const res = await axios.get("/chat/user-all-chats");
+export const fetchUserChats = async () => {
+  const res = await axios.get("/chats/");
   if (res.status !== 200) {
-    throw new Error("Unaable to send message");
+    throw new Error("Unable to fetch chats");
   }
   const data = res.data;
-  return data;
+  return data.chats;
 };

@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { openai } from "../config/openai-config.js";
-import User from "../models/User.js";
 
 export const createChatCompletion = async (
   req: Request,
@@ -54,7 +53,7 @@ export const sendChatsToUser = async (
   }
   try {
     const user = res.locals.user;
-    return res.status(200).json({ chats: user.chats });
+    return res.status(200).json({ chats: user.chat });
   } catch (error) {
     return res
       .status(500)

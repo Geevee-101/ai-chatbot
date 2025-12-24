@@ -25,7 +25,7 @@ export function Header() {
               <>
                 <NavigationLink
                   bg="#00fffc"
-                  to="/chat"
+                  to="/chats"
                   text="Go To Chat"
                   textColor="black"
                 />

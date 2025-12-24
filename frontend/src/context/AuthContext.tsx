@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { checkAuthStatus, loginUser } from "../api/auth-api";
+import { verifyAuthStatus, loginUser } from "../api/auth-api";
 
 type User = {
   name: string;
@@ -21,14 +21,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // check if user cookies are valid to skip login
-    async function checkStatus() {
-      const data = await checkAuthStatus();
-      if (data) {
-        setUser({ email: data.email, name: data.name });
-        setIsLoggedIn(true);
+    async function verifyStatus() {
+      try {
+        const data = await verifyAuthStatus();
+        if (data) {
+          setUser({ email: data.email, name: data.name });
+          setIsLoggedIn(true);
+        }
+      } catch (error) {
+        // If verification fails, user is not logged in
+        setIsLoggedIn(false);
       }
     }
-    checkStatus();
+    verifyStatus();
   }, []);
 
   const login = async (email: string, password: string) => {

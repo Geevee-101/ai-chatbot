@@ -1,7 +1,7 @@
 import axios from "../lib/axios";
 
 export const loginUser = async (email: string, password: string) => {
-  const res = await axios.post("/user/login", { email, password });
+  const res = await axios.post("/auth/login", { email, password });
   if (res.status !== 200) {
     throw new Error("Login failed");
   }
@@ -9,10 +9,10 @@ export const loginUser = async (email: string, password: string) => {
   return data;
 };
 
-export const checkAuthStatus = async () => {
-  const res = await axios.get("/user/auth-status");
+export const verifyAuthStatus = async () => {
+  const res = await axios.get("/auth/verify");
   if (res.status !== 200) {
-    throw new Error("Login failed");
+    throw new Error("Authentication failed");
   }
   const data = res.data;
   return data;
