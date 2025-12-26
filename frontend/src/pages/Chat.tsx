@@ -127,7 +127,15 @@ export function Chat() {
           </Button>
         </Box>
       </Box>
-      <Box sx={{ display: "flex", flex: 1, flexDirection: "column", px: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flex: 1,
+          flexDirection: "column",
+          px: 3,
+          borderRadius: 2,
+        }}
+      >
         <Typography
           sx={{ mx: "auto", fontSize: "40px", color: "white", mb: 2 }}
         >
@@ -158,7 +166,6 @@ export function Chat() {
         <div
           style={{
             width: "100%",
-            padding: "20px",
             borderRadius: 8,
             backgroundColor: "rgb(17, 29, 39)",
             display: "flex",
@@ -172,7 +179,7 @@ export function Chat() {
             style={{
               width: "100%",
               backgroundColor: "transparent",
-              padding: "10px",
+              padding: "30px",
               border: "none",
               outline: "none",
               color: "white",

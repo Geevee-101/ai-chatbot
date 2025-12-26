@@ -1,6 +1,5 @@
 import Navbar from "./components/Navbar";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Home from "./pages/Home";
 import { Toaster } from "sonner";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -18,20 +17,17 @@ function App() {
       </nav>
       <main>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route
+            path="/"
+            element={auth?.isLoggedIn ? <Chat /> : <Navigate to={"/login"} />}
+          />
           <Route
             path="/login"
-            element={!auth?.isLoggedIn ? <Login /> : <Navigate to={"/chats"} />}
+            element={!auth?.isLoggedIn ? <Login /> : <Navigate to={"/"} />}
           />
           <Route
             path="/signup"
-            element={
-              !auth?.isLoggedIn ? <Signup /> : <Navigate to={"/chats"} />
-            }
-          />
-          <Route
-            path="/chats"
-            element={auth?.isLoggedIn ? <Chat /> : <Navigate to={"/login"} />}
+            element={!auth?.isLoggedIn ? <Signup /> : <Navigate to={"/"} />}
           />
           <Route path="*" element={<NotFound />} />
         </Routes>
