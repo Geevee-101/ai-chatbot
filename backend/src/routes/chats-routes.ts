@@ -2,7 +2,8 @@ import { Router } from "express";
 import { chatCompletionValidator, validate } from "../utils/validators.js";
 import {
   createChatCompletion,
-  sendChatsToUser,
+  deleteUserChats,
+  getUserChats,
 } from "../controllers/chat-controllers.js";
 import {
   authenticateToken,
@@ -12,13 +13,14 @@ import {
 const chatsRoutes = Router();
 
 chatsRoutes.post(
-  "/new",
+  "/",
   validate(chatCompletionValidator()),
   authenticateToken,
   authenticateUser,
   createChatCompletion,
 );
 
-chatsRoutes.get("/", authenticateToken, authenticateUser, sendChatsToUser);
+chatsRoutes.get("/", authenticateToken, authenticateUser, getUserChats);
+chatsRoutes.delete("/", authenticateToken, authenticateUser, deleteUserChats);
 
 export default chatsRoutes;

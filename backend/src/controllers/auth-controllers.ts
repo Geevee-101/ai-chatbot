@@ -109,3 +109,25 @@ export const userLogin = async (
       .json({ message: "Internal server error", cause: error.message });
   }
 };
+
+export const userLogout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    res.clearCookie(COOKIE_NAME, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+    });
+
+    return res.status(200).json({
+      message: "User logged out successfully",
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", cause: error.message });
+  }
+};

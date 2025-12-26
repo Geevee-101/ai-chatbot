@@ -1,5 +1,5 @@
-import Header from "./components/Header";
-import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import { Toaster } from "sonner";
 import Login from "./pages/Login";
@@ -9,23 +9,34 @@ import NotFound from "./pages/NotFound";
 import { useAuth } from "./context/AuthContext";
 
 function App() {
-  console.log(useAuth()?.isLoggedIn);
+  const auth = useAuth();
 
   return (
     <>
-      <header>
-        <Header />
-      </header>
+      <nav>
+        <Navbar />
+      </nav>
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/chats" element={<Chat />} />
+          <Route
+            path="/login"
+            element={!auth?.isLoggedIn ? <Login /> : <Navigate to={"/chats"} />}
+          />
+          <Route
+            path="/signup"
+            element={
+              !auth?.isLoggedIn ? <Signup /> : <Navigate to={"/chats"} />
+            }
+          />
+          <Route
+            path="/chats"
+            element={auth?.isLoggedIn ? <Chat /> : <Navigate to={"/login"} />}
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
-        <Toaster />
       </main>
+      <Toaster />
     </>
   );
 }

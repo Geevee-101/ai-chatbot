@@ -3,9 +3,15 @@ import { AppBar, Toolbar, Typography } from "@mui/material";
 import Logo from "./shared/Logo";
 import NavigationLink from "./shared/NavigationLink";
 import { useAuth } from "../context/AuthContext";
+import { toast } from "sonner";
 
-export function Header() {
+export function Navbar() {
   const auth = useAuth();
+
+  const handleLogout = async () => {
+    await auth?.logout();
+    toast.success("Logout successful");
+  };
   return (
     <AppBar
       sx={{ bgcolor: "transparent", position: "static", boxShadow: "none" }}
@@ -31,10 +37,10 @@ export function Header() {
                 />
                 <NavigationLink
                   bg="#51538f"
-                  to="/logout"
+                  to="/"
                   text="Logout"
                   textColor="white"
-                  onClick={auth.logout}
+                  onClick={handleLogout}
                 />
               </>
             ) : (
@@ -60,4 +66,4 @@ export function Header() {
   );
 }
 
-export default Header;
+export default Navbar;

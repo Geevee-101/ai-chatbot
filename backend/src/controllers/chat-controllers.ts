@@ -41,7 +41,7 @@ export const createChatCompletion = async (
   });
 };
 
-export const sendChatsToUser = async (
+export const getUserChats = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -53,7 +53,29 @@ export const sendChatsToUser = async (
   }
   try {
     const user = res.locals.user;
-    return res.status(200).json({ chats: user.chat });
+    return res.status(200).json({ chats: user.chats });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error", cause: error.message });
+  }
+};
+
+export const deleteUserChats = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (!res.locals.user) {
+    return res
+      .status(401)
+      .json({ message: "Unauthorized, user not found or token invalid." });
+  }
+  try {
+    const user = res.locals.user;
+    user.chats = [];
+    await user.save();
+    return res.status(200).json({ message: "Chats deleted successfully" });
   } catch (error) {
     return res
       .status(500)

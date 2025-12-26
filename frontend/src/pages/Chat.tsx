@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import { Avatar, Box, Button, IconButton, Typography } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
 import { red } from "@mui/material/colors";
 import ChatItem from "../components/chats/ChatItem";
 import { ArrowUpRight } from "lucide-react";
-import { fetchUserChats, sendChatRequest } from "../api/chat-api";
+import { deleteUserChats, fetchUserChats, sendChatRequest } from "../api/chat";
 import { toast } from "sonner";
 
 type ChatMessage = {
@@ -13,6 +14,7 @@ type ChatMessage = {
 };
 
 export function Chat() {
+  const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const auth = useAuth();
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -36,25 +38,29 @@ export function Chat() {
     inputRef.current.value = "";
   };
 
+  const handleDeleteChats = async () => {
+    try {
+      await deleteUserChats();
+      setChatMessages([]);
+      toast.success("Chats deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete chats:", error);
+      toast.error("Failed to delete chats");
+    }
+  };
+
   useEffect(() => {
-    const toastId = toast.loading("Loading your chats...");
     fetchUserChats()
       .then((chats) => {
         setChatMessages(chats || []);
-
-        console.log("Fetched chats:", chats);
-        console.log("Chat messages state:", chats || []);
-        toast.success("Chats loaded successfully");
       })
       .catch((error) => {
         console.error("Failed to fetch chats:", error);
         toast.error("Failed to load chats");
-      })
-      .finally(() => {
-        toast.dismiss(toastId);
       });
   }, []);
-
+  // TODO: chat history loader
+  // TODO: reset conversation loader
   return (
     <Box
       sx={{
@@ -103,6 +109,7 @@ export function Chat() {
             Ask any question you have
           </Typography>
           <Button
+            onClick={handleDeleteChats}
             sx={{
               mx: "auto",
               my: "auto",

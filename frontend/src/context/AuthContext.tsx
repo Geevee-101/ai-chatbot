@@ -1,5 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { verifyAuthStatus, loginUser } from "../api/auth-api";
+import {
+  verifyAuthStatus,
+  loginUser,
+  logoutUser,
+  signupUser,
+} from "../api/auth.js";
 
 type User = {
   name: string;
@@ -36,6 +41,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     verifyStatus();
   }, []);
 
+  const signup = async (name: string, email: string, password: string) => {
+    const data = await signupUser(name, email, password);
+    if (data) {
+      setUser({ email: data.email, name: data.name });
+      setIsLoggedIn(true);
+    }
+  };
   const login = async (email: string, password: string) => {
     const data = await loginUser(email, password);
     if (data) {
@@ -43,15 +55,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsLoggedIn(true);
     }
   };
-  const signup = async (name: string, email: string, password: string) => {};
-  const logout = async () => {};
+
+  const logout = async () => {
+    await logoutUser();
+    setUser(null);
+    setIsLoggedIn(false);
+  };
 
   const value = {
     user,
     isLoggedIn,
+    signup,
     login,
     logout,
-    signup,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
